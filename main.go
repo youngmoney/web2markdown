@@ -67,16 +67,24 @@ func command(uri string, agent string, minContent int) {
 	ExitIfNonZero(err)
 	if len(converted) > minContent {
 		fmt.Println("#", article.Title)
+		fmt.Println()
+
+		var site = article.SiteName
+		if site == "" {
+			site = "Source"
+		}
+		fmt.Println("[" + site + "](" + uri + ")")
+		fmt.Println()
+
 		if article.Byline != "" {
-			fmt.Println()
 			fmt.Println("By", article.Byline)
+			fmt.Println()
 		}
 		if article.PublishedTime != nil {
-			fmt.Println()
 			fmt.Println("Published", article.PublishedTime.Format(time.DateOnly))
+			fmt.Println()
 
 		}
-		fmt.Println()
 		fmt.Print(converted)
 	} else {
 		fmt.Fprint(os.Stderr, "not enough content:\n", converted)
