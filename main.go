@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
 )
 
 func fetch(uri string, agent string) (string, error) {
@@ -65,6 +66,17 @@ func command(uri string, agent string, minContent int) {
 	converted, err := ExecuteCommand(`pandoc --from "html" --extract-media=/dev/null --to commonmark-raw_attribute-raw_html --lua-filter <(echo "function Image(i) return pandoc.Span({}) end")`, []string{}, body)
 	ExitIfNonZero(err)
 	if len(converted) > minContent {
+		fmt.Println("#", article.Title)
+		if article.Byline != "" {
+			fmt.Println()
+			fmt.Println("By", article.Byline)
+		}
+		if article.PublishedTime != nil {
+			fmt.Println()
+			fmt.Println("Published", article.PublishedTime.Format(time.DateOnly))
+
+		}
+		fmt.Println()
 		fmt.Print(converted)
 	} else {
 		fmt.Fprint(os.Stderr, "not enough content:\n", converted)
